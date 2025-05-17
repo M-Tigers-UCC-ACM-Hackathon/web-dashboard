@@ -11,7 +11,7 @@ export interface NginxLog {
 }
 
 export interface NginxLogNotificationPayload extends NotificationPayload {
-    action: 'INSERT' | 'UPDATE' | 'DELETE';
+    action: 'INSERT';
     table: 'nginx_logs';
     data: NginxLog;
 }

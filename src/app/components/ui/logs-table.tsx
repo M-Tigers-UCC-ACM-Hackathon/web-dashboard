@@ -113,7 +113,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                     <Table>
                         <TableHeader>
                             <TableRow className="border-b-2 border-gray-200 dark:border-gray-800">
-                                <TableHead className="w-12"></TableHead>
+                                {/* <TableHead className="w-12"></TableHead> */}
                                 <TableHead className="w-12"></TableHead>
                                 <TableHead className="font-medium">Type</TableHead>
                                 <TableHead className="font-medium">ID</TableHead>
@@ -131,13 +131,13 @@ export default function LogsTable({ data }: LogsTableProps) {
                             {paginatedData.map((log, idx) => (
                                 <>
                                     <TableRow key={log.id} className="border-b border-gray-100 dark:border-gray-800">
-                                        <TableCell>
+                                        {/* <TableCell>
                                             <Checkbox
                                                 checked={selectedRows.includes(log.id)}
                                                 onCheckedChange={() => handleCheckboxChange(log.id)}
                                                 className="border-2 border-gray-400 bg-white rounded"
                                             />
-                                        </TableCell>
+                                        </TableCell> */}
                                         <TableCell className="text-left">
                                             <button
                                                 onClick={() => handleExpandToggle(log.id)}
@@ -186,7 +186,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                                                     <span className="block truncate">{truncateText(log.browser || "-", 50)}</span>
                                                 </TooltipTrigger>
                                                 <TooltipContent>
-                                                    <p>{log.browser || "-"}</p>
+                                                    <p className="md:break-all">{log.browser || "-"}</p>
                                                 </TooltipContent>
                                             </Tooltip>
                                         </TableCell>
@@ -223,7 +223,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                                                                 <div className="font-medium">Bytes:</div>
                                                                 <div>{log.bytes}</div>
                                                                 <div className="font-medium">Browser:</div>
-                                                                <div>{log.browser || "-"}</div>
+                                                                <div className="max-w-[50px] break-all">{log.browser || "-"}</div>
                                                                 {/*<div className="font-medium">Selected:</div>*/}
                                                                 {/*<div>{selectedRows.includes(log.id) ? "Yes" : "No"}</div>*/}
                                                             </div>
