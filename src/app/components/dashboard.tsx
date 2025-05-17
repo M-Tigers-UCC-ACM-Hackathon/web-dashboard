@@ -46,6 +46,7 @@ interface HttpMethodData {
 }
 import LogsContainer from "../containers/logs-container"
 import AlertsContainer from "../containers/alerts-container"
+import AlertTrendChart from "../containers/alert-trend-chart"
 
 // Sample data for charts
 const alertLogData = [
@@ -194,16 +195,7 @@ export default function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="border border-gray-300">
-                    <CardHeader>
-                        <CardTitle>Total Alert Log Enter (Time)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-[300px]">
-                            <LineChartComponent data={alertLogData} theme={theme} />
-                        </div>
-                    </CardContent>
-                </Card>
+                <AlertTrendChart theme={theme} />
 
                 <Card className="border border-gray-300">
                     <CardHeader>
