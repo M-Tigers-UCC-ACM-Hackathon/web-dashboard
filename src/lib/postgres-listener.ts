@@ -3,6 +3,7 @@ import EventEmitter from 'events';
 import fs from 'fs';
 import path from 'path';
 import { NginxLogNotificationPayload } from '@/types/nginx-log';
+import { AlertNotificationPayload } from '@/types/alert';
 
 // --- Environment Variable Loading ---
 const PG_HOST = process.env.PG_HOST;
@@ -113,10 +114,21 @@ async function connectAndListen(): Promise<void> {
                     notificationEmitter.emit('new_nginx_log_error', { error: e, rawPayload: msg.payload });
                 }
             }
+
+            else if (msg.channel === PG_CHANNEL_ALERTS) {
+                try {
+                    const payloadData: AlertNotificationPayload = JSON.parse(msg.payload);
+                    typedNotificationEmitter.emit('new_alert_data', payloadData);
+                } catch (e) {
+                    console.error('Error parsing "alerts" notification payload:', e, 'Raw payload:', msg.payload);
+                }
+            }
         });
 
         await pgClient.query(`LISTEN ${PG_CHANNEL_LOGS}`);
         console.log(`Postgres Listener: Listening on channel: ${PG_CHANNEL_LOGS}`);
+        await pgClient.query(`LISTEN ${PG_CHANNEL_LOGS}`);
+        console.log(`Listening on channel: ${PG_CHANNEL_LOGS}`);
 
 
         pgClient.on('error', (err: Error) => {
@@ -160,9 +172,17 @@ if (process.env.NODE_ENV !== 'test' && allVarsPresent && caCertContent) {
 
 interface TypedEventEmitter extends EventEmitter {
     on(event: 'new_nginx_log', listener: (data: NotificationPayload) => void): this;
-    on(event: 'new_nginx_log_error', listener: (data: { error: unknown; rawPayload: string }) => void): this;
     emit(event: 'new_nginx_log', data: NotificationPayload): boolean;
+
+    on(event: 'new_nginx_log_error', listener: (data: { error: unknown; rawPayload: string }) => void): this;
     emit(event: 'new_nginx_log_error', data: { error: unknown; rawPayload: string }): boolean;
+
+    on(event: 'new_alert_data', listener: (data: AlertNotificationPayload) => void): this;
+    emit(event: 'new_alert_data', data: AlertNotificationPayload): boolean;
+
+    on(event: 'new_alert_error', listener: (data: { error: unknown; rawPayload: string }) => void): this;
+    emit(event: 'new_alert_error', data: { error: unknown; rawPayload: string }): boolean;
+
 }
 
 export const typedNotificationEmitter: TypedEventEmitter = notificationEmitter;
