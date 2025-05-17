@@ -1,0 +1,15 @@
+{
+    "name": "M-Tigers Web Dashboard",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest"
+        }
+    },
+    "forwardPorts": [
+        8080,
+        5432
+    ]
+}
