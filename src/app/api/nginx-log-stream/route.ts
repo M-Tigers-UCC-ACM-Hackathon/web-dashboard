@@ -1,10 +1,8 @@
-// src/app/api/nginx-log-stream/route.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { typedNotificationEmitter } from '@/lib/postgres-listener';
 import type { NginxLogNotificationPayload } from '@/types/nginx-log';
 
-export const dynamic = 'force-dynamic'; // Ensures the route is not statically generated
+export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
     // --- SSE Stream Logic ---
