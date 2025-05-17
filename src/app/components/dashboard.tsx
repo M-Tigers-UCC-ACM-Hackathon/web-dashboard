@@ -3,11 +3,12 @@
 import { useState, useEffect } from "react"
 import LineChartComponent from "./line-chart"
 import DonutChartComponent from "./donut-chart"
-import LogsTable from "./logs-table"
+import LogsTable from "./ui/logs-table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useMobile } from "@/app/hooks/use-mobile"
 import { ThemeToggle } from "./theme-toggle"
 import { useTheme } from "next-themes"
+import ParsedLogsContainer from "../containers/parsed-logs"
 
 // Sample data for charts
 const alertLogData = [
@@ -105,14 +106,7 @@ export default function Dashboard() {
                 </Card>
             </div>
 
-            <Card className="border border-gray-300">
-                <CardHeader>
-                    <CardTitle>Display Logs</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <LogsTable data={logsData} />
-                </CardContent>
-            </Card>
+            <ParsedLogsContainer />
         </div>
     )
 }
