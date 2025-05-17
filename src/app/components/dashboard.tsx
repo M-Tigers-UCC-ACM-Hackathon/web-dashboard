@@ -44,7 +44,8 @@ interface HttpMethodData {
     time: string;
     methods: { [key: string]: number };
 }
-import ParsedLogsContainer from "../containers/parsed-logs"
+import LogsContainer from "../containers/logs-container"
+import AlertsContainer from "../containers/alerts-container"
 
 // Sample data for charts
 const alertLogData = [
@@ -99,33 +100,33 @@ const logsData = [
 ]
 
 const alertData = [
-  {
-    alert_id: 1,
-    alert_type: "High Traffic",
-    severity: "Warning",
-    offender_ip: "20.171.26.170",
-    reason: "Excessive GET requests",
-    explanation: "IP sent 100 requests in 5 minutes, exceeding threshold",
-    created_at: "2025-05-17T20:00:00+05:30",
-  },
-  {
-    alert_id: 2,
-    alert_type: "Server Error",
-    severity: "Critical",
-    offender_ip: "65.49.20.69",
-    reason: "Multiple 500 errors",
-    explanation: "Server crashed due to overload",
-    created_at: "2025-05-17T20:05:00+05:30",
-  },
-  {
-    alert_id: 3,
-    alert_type: "Unauthorized Access",
-    severity: "Info",
-    offender_ip: "43.153.74.75",
-    reason: "Failed login attempt",
-    explanation: "IP attempted login with invalid credentials",
-    created_at: "2025-05-17T20:10:00+05:30",
-  },
+    {
+        alert_id: 1,
+        alert_type: "High Traffic",
+        severity: "Warning",
+        offender_ip: "20.171.26.170",
+        reason: "Excessive GET requests",
+        explanation: "IP sent 100 requests in 5 minutes, exceeding threshold",
+        created_at: "2025-05-17T20:00:00+05:30",
+    },
+    {
+        alert_id: 2,
+        alert_type: "Server Error",
+        severity: "Critical",
+        offender_ip: "65.49.20.69",
+        reason: "Multiple 500 errors",
+        explanation: "Server crashed due to overload",
+        created_at: "2025-05-17T20:05:00+05:30",
+    },
+    {
+        alert_id: 3,
+        alert_type: "Unauthorized Access",
+        severity: "Info",
+        offender_ip: "43.153.74.75",
+        reason: "Failed login attempt",
+        explanation: "IP attempted login with invalid credentials",
+        created_at: "2025-05-17T20:10:00+05:30",
+    },
 ];
 
 export default function Dashboard() {
@@ -216,23 +217,9 @@ export default function Dashboard() {
                 </Card>
             </div>
 
-            <Card className="border border-gray-300">
-            <CardHeader>
-                <CardTitle>Alert Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <AlertTable data={alertData} />
-            </CardContent>
-            </Card>
+            <AlertsContainer />
 
-            <Card className="border border-gray-300">
-                <CardHeader>
-                    <CardTitle>Display Logs</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <LogsTable data={logsData} />
-                </CardContent>
-            </Card>
+            <LogsContainer />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="border border-gray-300">
@@ -257,6 +244,6 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </div >
     )
 }
