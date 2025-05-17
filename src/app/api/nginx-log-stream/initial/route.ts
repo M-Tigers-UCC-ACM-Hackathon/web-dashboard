@@ -1,8 +1,7 @@
-// src/app/api/nginx-logs/initial/route.ts
 import { NextResponse } from 'next/server';
 import { Pool } from 'pg';
-import type { NginxLog } from '@/types/nginx-log'; // Adjust path as per your project structure
-import fs from 'fs'; // If reading CA cert from file
+import type { NginxLog } from '@/types/nginx-log';
+import fs from 'fs';
 import path from 'path'; // If reading CA cert from file
 
 // --- Environment Variable Checks & Pool Setup ---
@@ -63,7 +62,7 @@ export async function GET() {
             log_time: new Date(log.log_time).toISOString(),
         }));
 
-        return NextResponse.json(logs.reverse()); // Reverse for chronological display (oldest of batch first)
+        return NextResponse.json(logs); // Reverse for chronological display (oldest of batch first)
     } catch (error: any) {
         console.error('API Initial Logs: Error fetching data:', error);
         let clientErrorMessage = 'Failed to fetch initial logs from database.';

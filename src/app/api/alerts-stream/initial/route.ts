@@ -88,7 +88,7 @@ export async function GET() {
             created_at: new Date(alert.created_at as string | Date).toISOString(), // Ensure ISO string
         }));
 
-        return NextResponse.json(alerts.reverse()); // Reverse for chronological display
+        return NextResponse.json(alerts); // Reverse for chronological display
     } catch (error: any) {
         console.error('API Initial Alerts: Error fetching data:', error);
         let clientErrorMessage = 'Failed to fetch initial alerts from database.';
