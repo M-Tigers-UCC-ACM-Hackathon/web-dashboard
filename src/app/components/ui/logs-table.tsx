@@ -113,7 +113,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                     <Table>
                         <TableHeader>
                             <TableRow className="border-b-2 border-gray-200 dark:border-gray-800">
-                                <TableHead className="w-12"></TableHead>
+                                {/* <TableHead className="w-12"></TableHead> */}
                                 <TableHead className="w-12"></TableHead>
                                 <TableHead className="font-medium">Type</TableHead>
                                 <TableHead className="font-medium">ID</TableHead>
@@ -131,13 +131,13 @@ export default function LogsTable({ data }: LogsTableProps) {
                             {paginatedData.map((log, idx) => (
                                 <>
                                     <TableRow key={log.id} className="border-b border-gray-100 dark:border-gray-800">
-                                        <TableCell>
+                                        {/* <TableCell>
                                             <Checkbox
                                                 checked={selectedRows.includes(log.id)}
                                                 onCheckedChange={() => handleCheckboxChange(log.id)}
                                                 className="border-2 border-gray-400 bg-white rounded"
                                             />
-                                        </TableCell>
+                                        </TableCell> */}
                                         <TableCell className="text-left">
                                             <button
                                                 onClick={() => handleExpandToggle(log.id)}
