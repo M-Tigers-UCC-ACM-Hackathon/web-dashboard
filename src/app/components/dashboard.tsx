@@ -8,6 +8,41 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useMobile } from "@/app/hooks/use-mobile"
 import { ThemeToggle } from "./theme-toggle"
 import { useTheme } from "next-themes"
+import BarChartComponent from "./bar-chart"
+import StackedAreaChartComponent from "./stacked-area-chart"
+
+interface AlertLogData {
+  time: string;
+  current: number;
+  previous: number;
+}
+
+interface AlertTypeData {
+  type: string;
+  value: number;
+}
+
+interface LogData {
+  id: number;
+  ip: string;
+  timestamp: string;
+  method: string;
+  path: string;
+  http_version: string;
+  status: number;
+  bytes: number;
+  browser: string;
+}
+
+interface TopIpData {
+  ip: string;
+  requests: number;
+}
+
+interface HttpMethodData {
+  time: string;
+  methods: { [key: string]: number };
+}
 
 // Sample data for charts
 const alertLogData = [
@@ -65,9 +100,42 @@ export default function Dashboard() {
     const isMobile = useMobile()
     const [isClient, setIsClient] = useState(false)
     const { theme } = useTheme()
+    const [topIpsData, setTopIpsData] = useState<TopIpData[]>([]);
+    const [httpMethodsData, setHttpMethodsData] = useState<HttpMethodData[]>([]);
 
     useEffect(() => {
         setIsClient(true)
+
+        const ipCounts: { [key: string]: number } = {};
+        logsData.forEach((log) => {
+        ipCounts[log.ip] = (ipCounts[log.ip] || 0) + 1;
+        });
+
+        const sortedIps = Object.entries(ipCounts)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 3);
+
+        const data: TopIpData[] = sortedIps.map(([ip, requests]) => ({ ip, requests }));
+        setTopIpsData(data);
+
+        const methodData: { [key: string]: { [key: string]: number } } = {};
+        logsData.forEach((log) => {
+        // Extract time (truncate to minute for grouping)
+        const time = new Date(log.timestamp).toISOString().slice(0, 16); // e.g., "2025-03-31T00:00"
+        const method = log.method || "Unknown"; // Handle empty method as "Unknown"
+        
+
+        if (!methodData[time]) {
+            methodData[time] = {};
+        }
+        methodData[time][method] = (methodData[time][method] || 0) + 1;
+        });
+
+        const formattedData: HttpMethodData[] = Object.entries(methodData).map(([time, methods]) => ({
+        time,
+        methods,
+        }));
+        setHttpMethodsData(formattedData);
     }, [])
 
     if (!isClient) {
@@ -113,6 +181,30 @@ export default function Dashboard() {
                     <LogsTable data={logsData} />
                 </CardContent>
             </Card>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="border border-gray-300">
+                <CardHeader>
+                    <CardTitle>Top 3 IPs by Request Volume</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[300px]">
+                    <BarChartComponent data={topIpsData} theme={theme} />
+                    </div>
+                </CardContent>
+                </Card>
+
+                <Card className="border border-gray-300 w-full">
+                <CardHeader>
+                    <CardTitle>HTTP Methods Over Time</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="h-[300px]">
+                    <StackedAreaChartComponent data={httpMethodsData} theme={theme} />
+                    </div>
+                </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }
