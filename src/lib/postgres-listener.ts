@@ -103,7 +103,7 @@ async function connectAndListen(): Promise<void> {
                 console.warn('Postgres Listener: Received incomplete PG Notification:', msg);
                 return;
             }
-            console.log('Postgres Listener: Received PG Notification:', msg.channel, msg.payload);
+            // console.log('Postgres Listener: Received PG Notification:', msg.channel, msg.payload);
 
             if (msg.channel === PG_CHANNEL_LOGS) {
                 try {
