@@ -10,6 +10,7 @@ import { ThemeToggle } from "./theme-toggle"
 import { useTheme } from "next-themes"
 import BarChartComponent from "./bar-chart"
 import StackedAreaChartComponent from "./stacked-area-chart"
+import AlertTable from "./alert-table"
 
 interface AlertLogData {
   time: string;
@@ -96,10 +97,45 @@ const logsData = [
     },
 ]
 
+const alertData = [
+  {
+    alert_id: 1,
+    alert_type: "High Traffic",
+    severity: "Warning",
+    offender_ip: "20.171.26.170",
+    reason: "Excessive GET requests",
+    explanation: "IP sent 100 requests in 5 minutes, exceeding threshold",
+    created_at: "2025-05-17T20:00:00+05:30",
+  },
+  {
+    alert_id: 2,
+    alert_type: "Server Error",
+    severity: "Critical",
+    offender_ip: "65.49.20.69",
+    reason: "Multiple 500 errors",
+    explanation: "Server crashed due to overload",
+    created_at: "2025-05-17T20:05:00+05:30",
+  },
+  {
+    alert_id: 3,
+    alert_type: "Unauthorized Access",
+    severity: "Info",
+    offender_ip: "43.153.74.75",
+    reason: "Failed login attempt",
+    explanation: "IP attempted login with invalid credentials",
+    created_at: "2025-05-17T20:10:00+05:30",
+  },
+];
+
 export default function Dashboard() {
     const isMobile = useMobile()
     const [isClient, setIsClient] = useState(false)
     const { theme } = useTheme()
+    const [totalRequests, setTotalRequests] = useState<number | null>(null)
+    const [totalAlerts, setTotalAlerts] = useState<number | null>(null)
+    const [errorBursts, setErrorBursts] = useState<number | null>(null)
+    const [ipSpikes, setIpSpikes] = useState<number | null>(null)
+    const [behavioralDeviations, setBehavioralDeviations] = useState<number | null>(null)
     const [topIpsData, setTopIpsData] = useState<TopIpData[]>([]);
     const [httpMethodsData, setHttpMethodsData] = useState<HttpMethodData[]>([]);
 
@@ -146,6 +182,12 @@ export default function Dashboard() {
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Alert Dashboard</h1>
+                {/* <span>Total Requests: {totalRequests ?? "N/A"}</span> */}
+                <span>Total Requests: <strong>{totalRequests ?? "N/A"}</strong></span>
+                <span>Total Alerts: <strong>{totalAlerts ?? "N/A"}</strong></span>
+                <span>Error Bursts: <strong>{errorBursts ?? "N/A"}</strong></span>
+                <span>IP Spikes: <strong>{ipSpikes ?? "N/A"}</strong></span>
+                <span>Behavioral Deviations: <strong>{behavioralDeviations ?? "N/A"}</strong></span>
                 <ThemeToggle />
             </div>
 
@@ -172,6 +214,15 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
             </div>
+
+            <Card className="border border-gray-300">
+            <CardHeader>
+                <CardTitle>Alert Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <AlertTable data={alertData} />
+            </CardContent>
+            </Card>
 
             <Card className="border border-gray-300">
                 <CardHeader>

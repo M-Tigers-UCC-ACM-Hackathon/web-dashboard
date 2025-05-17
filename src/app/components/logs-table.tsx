@@ -186,7 +186,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                                                     <span className="block truncate">{truncateText(log.browser || "-", 50)}</span>
                                                 </TooltipTrigger>
                                                 <TooltipContent>
-                                                    <p>{log.browser || "-"}</p>
+                                                    <p className="md:break-all">{log.browser || "-"}</p>
                                                 </TooltipContent>
                                             </Tooltip>
                                         </TableCell>
@@ -223,7 +223,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                                                                 <div className="font-medium">Bytes:</div>
                                                                 <div>{log.bytes}</div>
                                                                 <div className="font-medium">Browser:</div>
-                                                                <div>{log.browser || "-"}</div>
+                                                                <div className="max-w-[50px] break-all">{log.browser || "-"}</div>
                                                                 {/*<div className="font-medium">Selected:</div>*/}
                                                                 {/*<div>{selectedRows.includes(log.id) ? "Yes" : "No"}</div>*/}
                                                             </div>
