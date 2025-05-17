@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/pagination"
 import { Badge } from "@/components/ui/badge"
 import { MapPin, ChevronRight, ChevronDown } from "lucide-react"
-import LocationMap from "./location-map"
+import LocationMap from "../location-map"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/components/ui/dialog"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -48,7 +48,7 @@ export default function LogsTable({ data }: LogsTableProps) {
     const [selectedRows, setSelectedRows] = useState<number[]>([])
     const [expandedRows, setExpandedRows] = useState<number[]>([])
 
-    const itemsPerPage = 3
+    const itemsPerPage = 10
     const totalPages = Math.ceil(data.length / itemsPerPage)
 
     const paginatedData = data.slice((page - 1) * itemsPerPage, page * itemsPerPage)
@@ -128,7 +128,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {paginatedData.map((log) => (
+                            {paginatedData.map((log, idx) => (
                                 <>
                                     <TableRow key={log.id} className="border-b border-gray-100 dark:border-gray-800">
                                         <TableCell>
@@ -230,7 +230,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                                                         </div>
                                                         <div>
                                                             <img src="/images/temp-map.png" alt="Temporary Map"
-                                                                 className="w-full h-auto rounded"/>
+                                                                className="w-full h-auto rounded" />
                                                             <div className="text-sm text-gray-700 mt-1 text-center">{log.ip}</div>
                                                         </div>
                                                     </div>
@@ -279,7 +279,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                         <div className=" w-full border border-gray-300 rounded-md">
                             {/*{selectedLocation && <LocationMap location={selectedLocation} />}*/}
                             <img src="/images/temp-map.png" alt="Temporary Map"
-                                 // className="w-full h-auto rounded"
+                            // className="w-full h-auto rounded"
                             />
                         </div>
                         {selectedLog && (
@@ -319,7 +319,7 @@ export default function LogsTable({ data }: LogsTableProps) {
                                         <div>{selectedRows.includes(selectedLog.id) ? "Yes" : "No"}</div>
                                     </div>
                                     {/*<div>*/}
-                                        {/*<img src="/images/temp-map.png" alt="Location Map" className="w-full h-auto rounded" />*/}
+                                    {/*<img src="/images/temp-map.png" alt="Location Map" className="w-full h-auto rounded" />*/}
                                     {/*</div>*/}
                                 </div>
                             </div>
