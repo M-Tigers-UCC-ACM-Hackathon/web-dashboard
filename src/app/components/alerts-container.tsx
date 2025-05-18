@@ -15,7 +15,6 @@ interface AlertTableEntry {
     created_at: string;
 }
 
-
 interface AlertsContainerProps {
     maxAlertsToShow?: number;
 }
@@ -24,6 +23,8 @@ const AlertsContainer: React.FC<AlertsContainerProps> = ({
     maxAlertsToShow = 50,
 }) => {
     const [alerts, setAlerts] = useState<Alert[]>([]);
+    const [totalAlerts, setTotalAlerts] = useState<number>(0);
+    const [totalLogs, setTotalLogs] = useState<number>(0);
     const [connectionStatus, setConnectionStatus] = useState<string>('Initializing...');
     const [isLoadingInitial, setIsLoadingInitial] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -64,7 +65,20 @@ const AlertsContainer: React.FC<AlertsContainerProps> = ({
         }
     };
 
+    async function fetchTotalCounts() {
+        try {
+            const response = await fetch("/api/summary");
+            const data = await response.json();
+            if (data.alertsCount !== undefined) {
+                setTotalAlerts(data.alertsCount);
+            }
+        } catch (error) {
+            console.error('Error fetching total counts:', error);
+        }
+    }
+
     useEffect(() => {
+        fetchTotalCounts();
         fetchInitialAlerts();
         const sseUrl = '/api/alerts-stream';
         let es: EventSource | null = null;
@@ -160,8 +174,11 @@ const AlertsContainer: React.FC<AlertsContainerProps> = ({
 
     return (
         <Card className="border border-gray-300">
-            <CardHeader>
+            <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Real-time Security Alerts</CardTitle>
+                <div className="text-sm text-muted-foreground">
+                    Total Alerts: {totalAlerts}
+                </div>
             </CardHeader>
             <CardContent>
                 {(!isLoadingInitial && alerts.length === 0 && !error) && <p>No alerts to display.</p>}
