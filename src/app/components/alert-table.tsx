@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
+import React from "react";
 
 interface AlertEntry {
   alert_id: number;
@@ -94,7 +95,7 @@ export default function AlertTable({ data }: AlertTableProps) {
             </TableHeader>
             <TableBody>
               {paginatedData.map((alert) => (
-                <>
+                <React.Fragment key={alert.alert_id}>
                   <TableRow key={alert.alert_id} className="border-b border-gray-100 dark:border-gray-800">
                     {/* <TableCell> */}
                       {/* <Checkbox
@@ -172,7 +173,7 @@ export default function AlertTable({ data }: AlertTableProps) {
                       </TableCell>
                     </TableRow>
                   )}
-                </>
+                </React.Fragment>
               ))}
             </TableBody>
           </Table>

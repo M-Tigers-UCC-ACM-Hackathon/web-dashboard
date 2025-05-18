@@ -11,6 +11,8 @@ import { useTheme } from "next-themes"
 import BarChartComponent from "./bar-chart"
 import StackedAreaChartComponent from "./stacked-area-chart"
 import AlertTable from "./alert-table"
+import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 interface AlertLogData {
     time: string;
@@ -181,15 +183,36 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            {/* <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-bold">Alert Dashboard</h1>
-                {/* <span>Total Requests: {totalRequests ?? "N/A"}</span> */}
                 <span>Total Requests: <strong>{totalRequests ?? "N/A"}</strong></span>
                 <span>Total Alerts: <strong>{totalAlerts ?? "N/A"}</strong></span>
                 <span>Error Bursts: <strong>{errorBursts ?? "N/A"}</strong></span>
                 <span>IP Spikes: <strong>{ipSpikes ?? "N/A"}</strong></span>
                 <span>Behavioral Deviations: <strong>{behavioralDeviations ?? "N/A"}</strong></span>
                 <ThemeToggle />
+            </div> */}
+            <div className="flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
+                <h1 className="text-2xl font-bold">Alert Dashboard</h1>
+
+                <div className="flex flex-wrap items-center gap-4">
+                    <span>Total Requests: <strong>{totalRequests ?? "N/A"}</strong></span>
+                    <span>Total Alerts: <strong>{totalAlerts ?? "N/A"}</strong></span>
+                    <span>Error Bursts: <strong>{errorBursts ?? "N/A"}</strong></span>
+                    <span>IP Spikes: <strong>{ipSpikes ?? "N/A"}</strong></span>
+                    <span>Behavioral Deviations: <strong>{behavioralDeviations ?? "N/A"}</strong></span>
+                </div>
+
+                <div className="mt-2 lg:mt-0 flex flex-row items-start gap-2">
+                    <Button
+                        onClick={() => window.open('/report', '_blank')}
+                        className="flex items-center gap-2"
+                        >
+                    <Image src="/ai-icon.svg" alt="AI Icon" width={20} height={20} />
+                        Generate Incident Report
+                    </Button>
+                    <ThemeToggle />
+                </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
