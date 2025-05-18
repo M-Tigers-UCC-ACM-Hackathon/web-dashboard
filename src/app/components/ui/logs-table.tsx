@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
     Pagination,
@@ -129,7 +129,7 @@ export default function LogsTable({ data, itemsPerPage = 5 }: LogsTableProps) {
                         </TableHeader>
                         <TableBody>
                             {paginatedData.map((log, idx) => (
-                                <>
+                                <React.Fragment key={log.id}>
                                     <TableRow key={log.id} className="border-b border-gray-100 dark:border-gray-800">
                                         {/* <TableCell>
                                             <Checkbox
@@ -238,7 +238,7 @@ export default function LogsTable({ data, itemsPerPage = 5 }: LogsTableProps) {
                                             </TableCell>
                                         </TableRow>
                                     )}
-                                </>
+                                </React.Fragment>
                             ))}
                         </TableBody>
                     </Table>
