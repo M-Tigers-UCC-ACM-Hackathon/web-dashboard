@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useState, useEffect } from 'react';
-import LineChartComponent from '@/app/components/line-chart';
+import LineChartComponent from '@/app/components/ui/line-chart';
 
 interface ChartDataPoint {
     time: string;
@@ -10,11 +10,11 @@ interface ChartDataPoint {
     previous: number;
 }
 
-interface AlertTrendChartProps {
+interface AlertTypeDistributionChartProps {
     theme?: string;
 }
 
-function AlertTrendChart({ theme }: AlertTrendChartProps) {
+function AlertTypeDistributionChartProps({ theme }: AlertTypeDistributionChartProps) {
     const [alertLogData, setAlertLogData] = useState<ChartDataPoint[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -24,7 +24,7 @@ function AlertTrendChart({ theme }: AlertTrendChartProps) {
             setIsLoading(true);
             setError(null);
             try {
-                const response = await fetch('/api/charts/alerts-trend');
+                const response = await fetch('/api/charts/alerts/trend');
                 if (!response.ok) {
                     let errorData;
                     try {
@@ -69,4 +69,4 @@ function AlertTrendChart({ theme }: AlertTrendChartProps) {
     );
 }
 
-export default AlertTrendChart;
+export default AlertTypeDistributionChartProps;

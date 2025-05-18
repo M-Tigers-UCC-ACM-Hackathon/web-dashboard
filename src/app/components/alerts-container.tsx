@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Alert, AlertNotificationPayload } from '@/types/alert';
-import AlertTable from '@/app/components/alert-table';
+import AlertTable from '@/app/components/ui/alert-table';
 
 interface AlertTableEntry {
     alert_id: number;
@@ -29,7 +29,6 @@ const AlertsContainer: React.FC<AlertsContainerProps> = ({
     const [error, setError] = useState<string | null>(null);
     const eventSourceRef = useRef<EventSource | null>(null);
 
-    // Helper to map numerical severity to string
     const mapSeverityToString = (severityValue?: number | null): string => {
         if (severityValue === null || typeof severityValue === 'undefined') return "Unknown";
         if (severityValue >= 2) return "Critical";
@@ -42,7 +41,6 @@ const AlertsContainer: React.FC<AlertsContainerProps> = ({
         setError(null);
         console.log("AlertsContainer: Attempting to fetch initial alerts...");
         try {
-            // Corrected API endpoint for initial alerts
             const response = await fetch('/api/alerts-stream/initial');
             if (!response.ok) {
                 let errorData;
