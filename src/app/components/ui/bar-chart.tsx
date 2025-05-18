@@ -5,15 +5,37 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
+export interface BarChartDataPoint {
+  offender_ip: string;
+  num_alerts: number;
+}
+
 interface BarChartProps {
-  data: { ip: string; requests: number }[];
+  data: BarChartDataPoint[];
   theme?: string;
 }
 
 const chartConfig = {
   requests: {
     label: "Request Volume",
-    color: "var(--chart-1)", // ShadCN chart color variable
+    theme: {
+      light: "var(--chart-1)",
+      dark: "var(--chart-1)",
+    }
+  },
+  requests2: {
+    label: "Request Volume",
+    theme: {
+      light: "var(--chart-2)",
+      dark: "var(--chart-2)",
+    }
+  },
+  requests3: {
+    label: "Request Volume",
+    theme: {
+      light: "var(--chart-3)",
+      dark: "var(--chart-3)",
+    }
   },
 };
 
@@ -32,7 +54,7 @@ const BarChartComponent: React.FC<BarChartProps> = ({ data, theme = "light" }) =
             stroke={resolvedTheme === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}
           />
           <XAxis
-            dataKey="ip"
+            dataKey="offender_ip"
             stroke={resolvedTheme === "dark" ? "#d1d5db" : "#4b5563"}
             tickLine={false}
             axisLine={false}
@@ -62,8 +84,8 @@ const BarChartComponent: React.FC<BarChartProps> = ({ data, theme = "light" }) =
             cursor={false}
           />
           <Bar
-            dataKey="requests"
-            fill="var(--chart-1)" // Use ShadCN's chart color variable
+            dataKey="num_alerts"
+            fill={`var(--chart-1)`}
             radius={[4, 4, 0, 0]} // Rounded top corners
           />
         </BarChart>
