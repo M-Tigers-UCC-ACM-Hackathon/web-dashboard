@@ -1,16 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import LineChartComponent from "./line-chart"
-import DonutChartComponent from "./donut-chart"
-import LogsTable from "./ui/logs-table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useMobile } from "@/app/hooks/use-mobile"
-import { ThemeToggle } from "./theme-toggle"
 import { useTheme } from "next-themes"
-import BarChartComponent from "./bar-chart"
-import StackedAreaChartComponent from "./stacked-area-chart"
-import AlertTable from "./alert-table"
+
+import { ThemeToggle } from "@/app/components/theme-toggle"
+import BarChartComponent from "@/app/components/ui/bar-chart"
+import LogsContainer from "@/app/components/logs-container"
+import AlertsContainer from "@/app/components/alerts-container"
+import AlertTrendChart from "@/app/components/alert-trend-chart"
+import AlertDistributionChart from "@/app/components/alert-distribution-chart"
 
 interface AlertLogData {
     time: string;
@@ -44,9 +44,7 @@ interface HttpMethodData {
     time: string;
     methods: { [key: string]: number };
 }
-import LogsContainer from "../containers/logs-container"
-import AlertsContainer from "../containers/alerts-container"
-import AlertTrendChart from "../containers/alert-trend-chart"
+
 
 // Sample data for charts
 const alertLogData = [
@@ -197,16 +195,7 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <AlertTrendChart theme={theme} />
 
-                <Card className="border border-gray-300">
-                    <CardHeader>
-                        <CardTitle>Alert Type Distribution</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-[300px] flex items-center justify-center">
-                            <DonutChartComponent data={alertTypeData} theme={theme} />
-                        </div>
-                    </CardContent>
-                </Card>
+                <AlertDistributionChart theme={theme} />
             </div>
 
             <AlertsContainer />
@@ -221,17 +210,6 @@ export default function Dashboard() {
                     <CardContent>
                         <div className="h-[300px]">
                             <BarChartComponent data={topIpsData} theme={theme} />
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="border border-gray-300 w-full">
-                    <CardHeader>
-                        <CardTitle>HTTP Methods Over Time</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-[300px]">
-                            <StackedAreaChartComponent data={httpMethodsData} theme={theme} />
                         </div>
                     </CardContent>
                 </Card>
