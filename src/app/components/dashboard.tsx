@@ -15,6 +15,7 @@ import TopOffenderChart from "./charts/top-offender"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import TopTargetedPathsChart from "./charts/top-targeted-paths"
+import ThemeAwareLogo from "./theme-aware-logo"
 
 interface AlertLogData {
     time: string;
@@ -182,7 +183,8 @@ export default function Dashboard() {
         <div className="space-y-6">
 
             <div className="flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
-                <h1 className="text-2xl font-bold">Alert Dashboard</h1>
+                
+                <ThemeAwareLogo width={80} height={80} /><h1 className="text-2xl font-bold">Dashboard</h1>
 
                 <div className="mt-2 lg:mt-0 flex flex-row items-start gap-2">
                     <Button
