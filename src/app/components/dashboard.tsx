@@ -14,6 +14,7 @@ import AlertDistributionChart from "@/app/components/charts/alert-distribution-c
 import TopOffenderChart from "./charts/top-offender"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import TopTargetedPathsChart from "./charts/top-targeted-paths"
 
 interface AlertLogData {
     time: string;
@@ -135,11 +136,6 @@ export default function Dashboard() {
     const isMobile = useMobile()
     const [isClient, setIsClient] = useState(false)
     const { theme } = useTheme()
-    const [totalRequests, setTotalRequests] = useState<number | null>(null)
-    const [totalAlerts, setTotalAlerts] = useState<number | null>(null)
-    const [errorBursts, setErrorBursts] = useState<number | null>(null)
-    const [ipSpikes, setIpSpikes] = useState<number | null>(null)
-    const [behavioralDeviations, setBehavioralDeviations] = useState<number | null>(null)
     const [topIpsData, setTopIpsData] = useState<TopIpData[]>([]);
     const [httpMethodsData, setHttpMethodsData] = useState<HttpMethodData[]>([]);
 
@@ -184,25 +180,9 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-6">
-            {/* <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Alert Dashboard</h1>
-                <span>Total Requests: <strong>{totalRequests ?? "N/A"}</strong></span>
-                <span>Total Alerts: <strong>{totalAlerts ?? "N/A"}</strong></span>
-                <span>Error Bursts: <strong>{errorBursts ?? "N/A"}</strong></span>
-                <span>IP Spikes: <strong>{ipSpikes ?? "N/A"}</strong></span>
-                <span>Behavioral Deviations: <strong>{behavioralDeviations ?? "N/A"}</strong></span>
-                <ThemeToggle />
-            </div> */}
+
             <div className="flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
                 <h1 className="text-2xl font-bold">Alert Dashboard</h1>
-
-                <div className="flex flex-wrap items-center gap-4">
-                    <span>Total Requests: <strong>{totalRequests ?? "N/A"}</strong></span>
-                    <span>Total Alerts: <strong>{totalAlerts ?? "N/A"}</strong></span>
-                    <span>Error Bursts: <strong>{errorBursts ?? "N/A"}</strong></span>
-                    <span>IP Spikes: <strong>{ipSpikes ?? "N/A"}</strong></span>
-                    <span>Behavioral Deviations: <strong>{behavioralDeviations ?? "N/A"}</strong></span>
-                </div>
 
                 <div className="mt-2 lg:mt-0 flex flex-row items-start gap-2">
                     <Button
@@ -228,6 +208,7 @@ export default function Dashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <TopOffenderChart theme={theme} />
+                <TopTargetedPathsChart theme={theme} />
             </div>
         </div >
     )

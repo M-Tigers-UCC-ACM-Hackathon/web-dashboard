@@ -6,13 +6,15 @@ import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
 
 export interface BarChartDataPoint {
-  offender_ip: string;
-  num_alerts: number;
+  label: string;
+  value: number;
 }
 
 interface BarChartProps {
   data: BarChartDataPoint[];
   theme?: string;
+  xAxisLabel?: string;
+  yAxisLabel?: string;
 }
 
 const chartConfig = {
@@ -23,23 +25,14 @@ const chartConfig = {
       dark: "var(--chart-1)",
     }
   },
-  requests2: {
-    label: "Request Volume",
-    theme: {
-      light: "var(--chart-2)",
-      dark: "var(--chart-2)",
-    }
-  },
-  requests3: {
-    label: "Request Volume",
-    theme: {
-      light: "var(--chart-3)",
-      dark: "var(--chart-3)",
-    }
-  },
 };
 
-const BarChartComponent: React.FC<BarChartProps> = ({ data, theme = "light" }) => {
+const BarChartComponent: React.FC<BarChartProps> = ({
+  data,
+  theme = "light",
+  xAxisLabel = "Category",
+  yAxisLabel = "Value"
+}) => {
   const { theme: resolvedTheme } = useTheme();
 
   return (
@@ -48,25 +41,34 @@ const BarChartComponent: React.FC<BarChartProps> = ({ data, theme = "light" }) =
       className={cn("w-full h-full p-2", resolvedTheme === "dark" ? "bg-gray-800" : "bg-white")}
     >
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data} margin={{ top: 20, right: 10, left: 0, bottom: 0 }}>
+        <BarChart data={data} margin={{ top: 20, right: 10, left: 10, bottom: 35 }}>
           <CartesianGrid
             strokeDasharray="3 3"
             stroke={resolvedTheme === "dark" ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"}
           />
           <XAxis
-            dataKey="offender_ip"
-            stroke={resolvedTheme === "dark" ? "#d1d5db" : "#4b5563"}
-            tickLine={false}
-            axisLine={false}
-            tick={{ fontSize: 12 }}
-          />
-          <YAxis
+            dataKey="label"
             stroke={resolvedTheme === "dark" ? "#d1d5db" : "#4b5563"}
             tickLine={false}
             axisLine={false}
             tick={{ fontSize: 12 }}
             label={{
-              value: "Requests",
+              value: xAxisLabel,
+              position: "bottom",
+              offset: 0,
+              fill: resolvedTheme === "dark" ? "#e5e7eb" : "#1f2937",
+              fontSize: 14,
+              fontWeight: 500,
+            }}
+          />
+          <YAxis
+            dataKey="value"
+            stroke={resolvedTheme === "dark" ? "#d1d5db" : "#4b5563"}
+            tickLine={false}
+            axisLine={false}
+            tick={{ fontSize: 12 }}
+            label={{
+              value: yAxisLabel,
               angle: -90,
               position: "insideLeft",
               offset: 10,
@@ -84,9 +86,10 @@ const BarChartComponent: React.FC<BarChartProps> = ({ data, theme = "light" }) =
             cursor={false}
           />
           <Bar
-            dataKey="num_alerts"
+            dataKey="value"
+            name={data[0]?.label || "Value"}
             fill={`var(--chart-1)`}
-            radius={[4, 4, 0, 0]} // Rounded top corners
+            radius={[4, 4, 0, 0]}
           />
         </BarChart>
       </ResponsiveContainer>
