@@ -13,11 +13,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-<<<<<<< HEAD:src/app/components/alert-table.tsx
 import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
-=======
->>>>>>> main:src/app/components/ui/alert-table.tsx
 
 interface AlertEntry {
   alert_id: number;
