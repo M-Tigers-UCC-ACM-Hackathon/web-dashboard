@@ -181,12 +181,30 @@ export default function Dashboard() {
 
     return (
         <div className="space-y-6">
-
-            <div className="flex flex-col lg:flex-row justify-between gap-4 lg:items-center">
+            <div className="flex justify-between items-center w-full mb-6">
+                {/* Left side - Logo and title */}
+                <div className="flex items-center gap-3">
+                    <ThemeAwareLogo width={50} height={50} />
+                    <h1 className="text-2xl font-bold">Dashboard</h1>
+                </div>
                 
-                <ThemeAwareLogo width={80} height={80} /><h1 className="text-2xl font-bold">Dashboard</h1>
+                {/* Right side - Actions */}
+                <div className="flex items-center gap-3">
+                    <Button
+                    onClick={() => window.open('/report', '_blank')}
+                    className="flex items-center gap-2"
+                    >
+                    <Image src="/ai-icon.svg" alt="AI Icon" width={20} height={20} />
+                    Generate Incident Report
+                    </Button>
+                    <ThemeToggle />
+                </div>
+                </div>
+            {/* <div className="flex flex-col lg:flex-row justify-start gap-4 lg:items-center">
+                <div className="fkex justify-start"><ThemeAwareLogo width={80} height={80} /><h1 className="text-2xl font-bold">Dashboard</h1></div>
+                
 
-                <div className="mt-2 lg:mt-0 flex flex-row items-start gap-2">
+                <div className="mt-2 lg:mt-0 flex flex-row justify-end items-start gap-2">
                     <Button
                         onClick={() => window.open('/report', '_blank')}
                         className="flex items-center gap-2"
@@ -196,7 +214,7 @@ export default function Dashboard() {
                     </Button>
                     <ThemeToggle />
                 </div>
-            </div>
+            </div> */}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <AlertTrendChart theme={theme} />

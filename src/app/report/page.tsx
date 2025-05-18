@@ -13,6 +13,16 @@ interface CodeProps extends React.ClassAttributes<HTMLElement>, React.HTMLAttrib
   node?: any;
 }
 
+interface DistributionItem {
+  type: string;
+  value: number;
+}
+
+interface OffenderItem {
+  label: string;
+  value: number;
+}
+
 export default function AIReportPage() {
   const [report, setReport] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -37,46 +47,71 @@ export default function AIReportPage() {
       try {
         // Start progress
         setProgress(10)
+
+        const summaryRes = await fetch('/api/summary')
+        const summaryData = await summaryRes.json()
+
+        const distributionRes = await fetch('/api/charts/alerts/type-distribution')
+        const distributionData = await distributionRes.json()
         
+        const errorBursts = distributionData.find((item: DistributionItem) => item.type === 'Error Burst')?.value || 0
+        const ipSpikes = distributionData.find((item: DistributionItem) => item.type === 'IP Spike')?.value || 0
+        const behavioralDeviations = distributionData.find((item: DistributionItem) => item.type === 'Behavior Deviation')?.value || 0
+        
+        const offendersRes = await fetch('/api/charts/alerts/top-offenders')
+        const offendersData = await offendersRes.json()
+
+        const topOffenders = offendersData.map((offender: OffenderItem) => ({
+          ip: offender.label,
+          flags: [Math.floor(Math.random() * 3) + 1], 
+          request_count: offender.value
+        }))
+        
+        setProgress(40)
+        const requestPayload = {
+          summary_stats: {
+            total_requests: summaryData.nginxLogsCount,
+            total_alerts: summaryData.alertsCount,
+            error_bursts: errorBursts,
+            ip_spikes: ipSpikes,
+            behavioral_deviations: behavioralDeviations,
+          },
+          top_offenders: topOffenders,
+          notable_alerts: [
+            {
+              type: 'IP Spike',
+              ip: '84.203.1.217',
+              time: '05:13–05:20',
+              path: '/wp-cron.php',
+              explanation:
+                'Automated WordPress cron jobs triggered excessive traffic.',
+            },
+            {
+              type: 'Error Burst',
+              ip: '196.251.88.242',
+              time: '08:49–08:50',
+              path: '/wp-content/themes/about.php',
+              status: 403,
+              explanation:
+                'Bot likely probing for vulnerable themes.',
+            },
+            {
+              type: 'Behavior Deviation',
+              ip: '20.171.207.50',
+              time: '09:22–09:35',
+              path: '/admin/login.php',
+              status: 404,
+              explanation: 'Suspicious login attempts targeting non-existent admin panel.',
+            }
+          ],
+        };
+        console.log('Request Payload:', requestPayload)
         const res = await fetch('/api/incident-digest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            summary_stats: {
-              total_requests: 10000,
-              total_alerts: 218,
-              error_bursts: 34,
-              ip_spikes: 91,
-              behavioral_deviations: 93,
-            },
-            top_offenders: [
-              { ip: '20.171.207.17', flags: [1, 3], request_count: 382 },
-              { ip: '84.203.1.217', flags: [2], request_count: 244 },
-            ],
-            notable_alerts: [
-              {
-                type: 'IP Spike',
-                ip: '84.203.1.217',
-                time: '05:13–05:20',
-                path: '/wp-cron.php',
-                explanation:
-                  'Automated WordPress cron jobs triggered excessive traffic.',
-              },
-              {
-                type: 'Error Burst',
-                ip: '196.251.88.242',
-                time: '08:49–08:50',
-                path: '/wp-content/themes/about.php',
-                status: 403,
-                explanation:
-                  'Bot likely probing for vulnerable themes.',
-              },
-            ],
-          }),
+          body: JSON.stringify(requestPayload),
         })
-
         setProgress(70)
-        
         const { incidentReport } = await res.json()
         setReport(incidentReport)
         setLoading(false)
