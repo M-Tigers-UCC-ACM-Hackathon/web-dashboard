@@ -3,23 +3,35 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import React, { useState, useEffect } from 'react';
 
-import DonutChartComponent, { DonutChartDataPoint } from '@/app/components/ui/donut-chart';
-
-interface AlertDistributionChartProps {
+interface ChartProps<T> {
+    title: string;
+    endpoint: string;
     theme?: string;
+    chartComponent: React.ComponentType<{ data: T[]; theme?: string }>;
+    emptyMessage?: string;
+    refreshInterval?: number;
+    dataParser?: (data: any) => T[];
 }
 
-function AlertDistributionChart({ theme }: AlertDistributionChartProps) {
-    const [chartData, setChartData] = useState<DonutChartDataPoint[]>([]);
+function BaseChart<T>({
+    title,
+    endpoint,
+    theme,
+    chartComponent: ChartComponent,
+    emptyMessage = "No data available.",
+    refreshInterval = 300000, // 5 minutes default
+    dataParser = (data) => data,
+}: ChartProps<T>) {
+    const [chartData, setChartData] = useState<T[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchDistributionData = async () => {
+        const fetchData = async () => {
             setIsLoading(true);
             setError(null);
             try {
-                const response = await fetch('/api/charts/alerts/type-distribution');
+                const response = await fetch(endpoint);
                 if (!response.ok) {
                     let errorData;
                     try {
@@ -27,36 +39,39 @@ function AlertDistributionChart({ theme }: AlertDistributionChartProps) {
                     } catch (jsonParseError) {
                         throw new Error(`Server responded with ${response.status}: ${response.statusText}. Response not JSON.`);
                     }
-                    throw new Error(errorData.error || `Failed to fetch alert distribution: ${response.statusText}`);
+                    throw new Error(errorData.error || `Failed to fetch data: ${response.statusText}`);
                 }
-                const data: DonutChartDataPoint[] = await response.json();
-                setChartData(data);
+                const rawData = await response.json();
+                const parsedData = dataParser(rawData);
+                setChartData(parsedData);
             } catch (err: any) {
-                console.error("AlertDistributionChart: Error fetching distribution data:", err);
-                setError(err.message || "Failed to load distribution data.");
+                console.error(`Error fetching data from ${endpoint}:`, err);
+                setError(err.message || "Failed to load data.");
             } finally {
                 setIsLoading(false);
             }
         };
 
-        fetchDistributionData();
+        fetchData();
 
-        const intervalId = setInterval(fetchDistributionData, 60000 * 5); // Refetch every 15 minutes
-        return () => clearInterval(intervalId); // Cleanup interval
+        const intervalId = setInterval(fetchData, refreshInterval);
+        return () => clearInterval(intervalId);
     }, []);
 
     return (
         <Card className="border border-gray-300">
             <CardHeader>
-                <CardTitle>Alert Type Distribution</CardTitle>
+                <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardContent>
                 {isLoading && <p className="text-center">Loading chart data...</p>}
                 {error && <p style={{ color: 'red' }} className="text-center">Error: {error}</p>}
-                {!isLoading && !error && chartData.length === 0 && <p className="text-center">No alert distribution data available.</p>}
+                {!isLoading && !error && chartData.length === 0 && (
+                    <p className="text-center">{emptyMessage}</p>
+                )}
                 {!isLoading && !error && chartData.length > 0 && (
                     <div className="h-[300px] flex items-center justify-center">
-                        <DonutChartComponent data={chartData} theme={theme} />
+                        <ChartComponent data={chartData} theme={theme} />
                     </div>
                 )}
             </CardContent>
@@ -64,4 +79,4 @@ function AlertDistributionChart({ theme }: AlertDistributionChartProps) {
     );
 }
 
-export default AlertDistributionChart;
+export default BaseChart;

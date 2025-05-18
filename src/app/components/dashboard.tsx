@@ -9,8 +9,9 @@ import { ThemeToggle } from "@/app/components/theme-toggle"
 import BarChartComponent from "@/app/components/ui/bar-chart"
 import LogsContainer from "@/app/components/logs-container"
 import AlertsContainer from "@/app/components/alerts-container"
-import AlertTrendChart from "@/app/components/alert-trend-chart"
-import AlertDistributionChart from "@/app/components/alert-distribution-chart"
+import AlertTrendChart from "@/app/components/charts/alert-trend-chart"
+import AlertDistributionChart from "@/app/components/charts/alert-distribution-chart"
+import TopOffenderChart from "./charts/top-offender"
 
 interface AlertLogData {
     time: string;
@@ -203,16 +204,7 @@ export default function Dashboard() {
             <LogsContainer />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="border border-gray-300">
-                    <CardHeader>
-                        <CardTitle>Top 3 IPs by Request Volume</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-[300px]">
-                            <BarChartComponent data={topIpsData} theme={theme} />
-                        </div>
-                    </CardContent>
-                </Card>
+                <TopOffenderChart theme={theme} />
             </div>
         </div >
     )
