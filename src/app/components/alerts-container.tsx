@@ -145,7 +145,7 @@ const AlertsContainer: React.FC<AlertsContainerProps> = ({
                 eventSourceRef.current = null;
             }
         };
-    }, [maxAlertsToShow, isLoadingInitial]);
+    }, [maxAlertsToShow]);
 
     // Map raw Alert data to the AlertTableEntry structure expected by AlertTable
     const tableData: AlertTableEntry[] = alerts.map(alert => ({

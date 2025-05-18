@@ -27,8 +27,8 @@ export async function GET() {
         const result = await pool.query<OffenderIpCountFromDB>(query);
 
         const chartData: BarChartDataPoint[] = result.rows.map(row => ({
-            offender_ip: row.offender_ip,
-            num_alerts: parseInt(row.count, 10),
+            label: row.offender_ip,
+            value: parseInt(row.count, 10),
         }));
 
         // If you need to provide data in a format directly consumable by Chart.js

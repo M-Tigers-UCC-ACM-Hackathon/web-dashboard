@@ -70,7 +70,7 @@ function BaseChart<T>({
                     <p className="text-center">{emptyMessage}</p>
                 )}
                 {!isLoading && !error && chartData.length > 0 && (
-                    <div className="h-[300px] flex items-center justify-center">
+                    <div className="h-[350px] flex items-center justify-center">
                         <ChartComponent data={chartData} theme={theme} />
                     </div>
                 )}

@@ -89,6 +89,8 @@ pool.on('error', (err, client) => {
     // You might want to add more sophisticated error handling or metrics here
 });
 
+let isClosingPool = false;
+
 // --- Export the Pool ---
 // This is the single pool instance that all API routes will import and use.
 export default pool;
@@ -101,6 +103,9 @@ export async function query<T extends QueryResultRow = any>(text: string, params
     }
     const start = Date.now();
     try {
+        if (isClosingPool) {
+            throw new Error("Database pool is shutting down. Cannot execute query.");
+        }
         const res = await pool.query<T>(text, params);
         const duration = Date.now() - start;
         // console.log('DB Module: Executed query', { text, duration, rows: res.rowCount }); // Can be too verbose
@@ -114,22 +119,43 @@ export async function query<T extends QueryResultRow = any>(text: string, params
 if (process.env.NODE_ENV !== 'production') {
     let shuttingDown = false;
     const gracefulShutdown = async (signal: string) => {
-        if (shuttingDown) return;
+        if (shuttingDown || isClosingPool) return;
         shuttingDown = true;
+        isClosingPool = true;
+        
         console.log(`DB Module (Dev): Received ${signal}. Attempting to close PostgreSQL pool...`);
         try {
             if (customGlobal[GLOBAL_PG_POOL_KEY]) {
-                await customGlobal[GLOBAL_PG_POOL_KEY]!.end();
-                console.log('DB Module (Dev): PostgreSQL pool closed successfully.');
-                customGlobal[GLOBAL_PG_POOL_KEY] = undefined; // Clear global ref
+                // Add a timeout to ensure the pool closes even if some clients are stuck
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('Pool closing timed out')), 5000);
+                });
+                
+                try {
+                    await Promise.race([
+                        customGlobal[GLOBAL_PG_POOL_KEY]!.end(),
+                        timeoutPromise
+                    ]);
+                    console.log('DB Module (Dev): PostgreSQL pool closed successfully.');
+                } catch (err: any) { // Type as any since the error could be from pool.end() or our timeout
+                    if (err?.message === 'Pool closing timed out') {
+                        console.error('DB Module (Dev): Pool closing timed out, forcing exit.');
+                    } else {
+                        console.error('DB Module (Dev): Error closing PostgreSQL pool:', err);
+                    }
+                } finally {
+                    customGlobal[GLOBAL_PG_POOL_KEY] = undefined; // Clear global ref
+                }
             }
         } catch (err) {
-            console.error('DB Module (Dev): Error closing PostgreSQL pool:', err);
+            console.error('DB Module (Dev): Error in graceful shutdown:', err);
         } finally {
+            isClosingPool = false;
             process.exit(0); // Exit after attempting to close
         }
     };
 
-    process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-    process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+    // Use the 'once' handler instead of 'on' to prevent multiple handlers
+    process.once('SIGINT', () => gracefulShutdown('SIGINT'));
+    process.once('SIGTERM', () => gracefulShutdown('SIGTERM'));
 }

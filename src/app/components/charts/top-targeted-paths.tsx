@@ -4,17 +4,17 @@ import React from 'react';
 import BaseChart from '@/app/components/ui/base-chart';
 import BarChartComponent, { BarChartDataPoint } from '../ui/bar-chart';
 
-interface TopOffenderChartProps {
+interface TopTargetedPathChartProps {
     theme?: string;
 }
 
-function TopOffenderChart({ theme }: TopOffenderChartProps) {
+function TopTargetedPathsChart({ theme }: TopTargetedPathChartProps) {
     const chartComponent = React.useCallback((props: { data: BarChartDataPoint[] }) => {
         return (
             <BarChartComponent
                 {...props}
-                xAxisLabel="IP Addresses"
-                yAxisLabel="Alert Count"
+                xAxisLabel="Paths"
+                yAxisLabel="Request Count"
                 theme={theme}
             />
         );
@@ -22,13 +22,13 @@ function TopOffenderChart({ theme }: TopOffenderChartProps) {
 
     return (
         <BaseChart<BarChartDataPoint>
-            title="Top 3 IPs by Alerts Generated"
-            endpoint="/api/charts/alerts/top-offenders"
+            title="Top Targeted Paths"
+            endpoint="/api/charts/top-targeted-paths"
             theme={theme}
             chartComponent={chartComponent}
-            emptyMessage="No IP data available."
+            emptyMessage="No path data available."
         />
     );
 }
 
-export default TopOffenderChart;
+export default TopTargetedPathsChart;
