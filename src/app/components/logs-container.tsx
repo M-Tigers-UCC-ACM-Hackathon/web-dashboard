@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { NginxLog, NginxLogNotificationPayload } from '@/types/nginx-log';
 import LogsTable from '@/app/components/ui/logs-table';
 
-interface RealtimeNginxLogsContainerProps {
+interface LogsContainerProps {
     maxLogsToShow?: number;
 }
 
-const ParsedLogsContainer: React.FC<RealtimeNginxLogsContainerProps> = ({
+const LogsContainer: React.FC<LogsContainerProps> = ({
     maxLogsToShow = 50,
 }) => {
     const [logs, setLogs] = useState<NginxLog[]>([]);
@@ -55,12 +55,12 @@ const ParsedLogsContainer: React.FC<RealtimeNginxLogsContainerProps> = ({
 
         const connect = () => {
             if (eventSourceRef.current) {
-                eventSourceRef.current.close(); // Close existing connection if any
+                eventSourceRef.current.close();
             }
 
             es = new EventSource(sseUrl);
             eventSourceRef.current = es;
-            setConnectionStatus('Connecting to real-time log stream...');
+            // setConnectionStatus('Connecting to real-time log stream...');
             setError(null);
 
             es.onopen = () => {
@@ -103,7 +103,6 @@ const ParsedLogsContainer: React.FC<RealtimeNginxLogsContainerProps> = ({
                                 updatedLogs = [newLogEntry, ...prevLogs]; // Add if not found (treat as new)
                             }
                         }
-                        // Add logic for 'DELETE' if implemented
 
                         return updatedLogs.slice(0, maxLogsToShow);
                     });
@@ -144,14 +143,8 @@ const ParsedLogsContainer: React.FC<RealtimeNginxLogsContainerProps> = ({
                 eventSourceRef.current = null;
             }
         };
-    }, [maxLogsToShow]); // Re-connect if maxLogsToShow changes
+    }, [maxLogsToShow]);
 
-    // Map NginxLog to LogEntry for the LogsTable component if needed
-    // This is where you would handle differences between NginxLog and your table's LogEntry type.
-    // For this example, I'm assuming NginxLog is directly compatible enough or
-    // that LogsTable handles potentially null fields from NginxLog appropriately.
-    // If your LogEntry has fields like `browser` derived from `user_agent`,
-    // or `type` derived from `status`, this mapping step is where you'd do it.
 
     const tableData = logs.map(log => ({
         id: log.id,
@@ -181,4 +174,4 @@ const ParsedLogsContainer: React.FC<RealtimeNginxLogsContainerProps> = ({
     );
 };
 
-export default ParsedLogsContainer;
+export default LogsContainer;

@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     // --- SSE Stream Logic ---
     const stream = new ReadableStream({
         start(controller) {
-            console.log('SSE stream started for an authorized client.');
+            console.log('SSE Logs Stream: client connected.');
 
             const dataHandler = (data: NotificationPayload) => {
                 try {
@@ -16,9 +16,6 @@ export async function GET(request: NextRequest) {
                     controller.enqueue(new TextEncoder().encode(sseFormattedData));
                 } catch (e) {
                     console.error("SSE: Error encoding data for stream:", e);
-                    // Optionally, you could try to send an error event to the client
-                    // const errorEvent = `event: error\ndata: ${JSON.stringify({ message: "Error processing update" })}\n\n`;
-                    // controller.enqueue(new TextEncoder().encode(errorEvent));
                 }
             };
 

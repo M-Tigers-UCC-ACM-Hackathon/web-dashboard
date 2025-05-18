@@ -103,14 +103,14 @@ async function connectAndListen(): Promise<void> {
                 console.warn('Postgres Listener: Received incomplete PG Notification:', msg);
                 return;
             }
-            console.log('Postgres Listener: Received PG Notification:', msg.channel, msg.payload);
+            // console.log('Postgres Listener: Received PG Notification:', msg.channel, msg.payload);
 
             if (msg.channel === PG_CHANNEL_LOGS) {
                 try {
                     const payloadData: NginxLogNotificationPayload = JSON.parse(msg.payload);
                     notificationEmitter.emit('new_nginx_log', payloadData);
                 } catch (e) {
-                    console.error('Postgres Listener: Error parsing notification payload:', e, 'Raw payload:', msg.payload);
+                    console.error('Postgres Listener: Error parsing "logs" notification payload:', e, 'Raw payload:', msg.payload);
                     notificationEmitter.emit('new_nginx_log_error', { error: e, rawPayload: msg.payload });
                 }
             }
@@ -118,17 +118,17 @@ async function connectAndListen(): Promise<void> {
             else if (msg.channel === PG_CHANNEL_ALERTS) {
                 try {
                     const payloadData: AlertNotificationPayload = JSON.parse(msg.payload);
-                    typedNotificationEmitter.emit('new_alert_data', payloadData);
+                    notificationEmitter.emit('new_alert_data', payloadData);
                 } catch (e) {
-                    console.error('Error parsing "alerts" notification payload:', e, 'Raw payload:', msg.payload);
+                    console.error('Postgres Listener: Error parsing "alerts" notification payload:', e, 'Raw payload:', msg.payload);
                 }
             }
         });
 
         await pgClient.query(`LISTEN ${PG_CHANNEL_LOGS}`);
         console.log(`Postgres Listener: Listening on channel: ${PG_CHANNEL_LOGS}`);
-        await pgClient.query(`LISTEN ${PG_CHANNEL_LOGS}`);
-        console.log(`Listening on channel: ${PG_CHANNEL_LOGS}`);
+        await pgClient.query(`LISTEN ${PG_CHANNEL_ALERTS}`);
+        console.log(`Postgres Listener: Listening on channel: ${PG_CHANNEL_ALERTS}`);
 
 
         pgClient.on('error', (err: Error) => {

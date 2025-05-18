@@ -37,10 +37,11 @@ interface LogEntry {
 }
 
 interface LogsTableProps {
-    data: LogEntry[]
+    data: LogEntry[];
+    itemsPerPage?: number;
 }
 
-export default function LogsTable({ data }: LogsTableProps) {
+export default function LogsTable({ data, itemsPerPage = 5 }: LogsTableProps) {
     const [page, setPage] = useState(1)
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -48,7 +49,6 @@ export default function LogsTable({ data }: LogsTableProps) {
     const [selectedRows, setSelectedRows] = useState<number[]>([])
     const [expandedRows, setExpandedRows] = useState<number[]>([])
 
-    const itemsPerPage = 10
     const totalPages = Math.ceil(data.length / itemsPerPage)
 
     const paginatedData = data.slice((page - 1) * itemsPerPage, page * itemsPerPage)

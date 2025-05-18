@@ -1,16 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import LineChartComponent from "./line-chart"
-import DonutChartComponent from "./donut-chart"
-import LogsTable from "./ui/logs-table"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useMobile } from "@/app/hooks/use-mobile"
-import { ThemeToggle } from "./theme-toggle"
 import { useTheme } from "next-themes"
-import BarChartComponent from "./bar-chart"
-import StackedAreaChartComponent from "./stacked-area-chart"
-import AlertTable from "./alert-table"
+
+import { ThemeToggle } from "@/app/components/theme-toggle"
+import BarChartComponent from "@/app/components/ui/bar-chart"
+import LogsContainer from "@/app/components/logs-container"
+import AlertsContainer from "@/app/components/alerts-container"
+import AlertTrendChart from "@/app/components/alert-trend-chart"
+import AlertDistributionChart from "@/app/components/alert-distribution-chart"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
@@ -46,7 +46,7 @@ interface HttpMethodData {
     time: string;
     methods: { [key: string]: number };
 }
-import ParsedLogsContainer from "../containers/parsed-logs"
+
 
 // Sample data for charts
 const alertLogData = [
@@ -101,33 +101,33 @@ const logsData = [
 ]
 
 const alertData = [
-  {
-    alert_id: 1,
-    alert_type: "High Traffic",
-    severity: "Warning",
-    offender_ip: "20.171.26.170",
-    reason: "Excessive GET requests",
-    explanation: "IP sent 100 requests in 5 minutes, exceeding threshold",
-    created_at: "2025-05-17T20:00:00+05:30",
-  },
-  {
-    alert_id: 2,
-    alert_type: "Server Error",
-    severity: "Critical",
-    offender_ip: "65.49.20.69",
-    reason: "Multiple 500 errors",
-    explanation: "Server crashed due to overload",
-    created_at: "2025-05-17T20:05:00+05:30",
-  },
-  {
-    alert_id: 3,
-    alert_type: "Unauthorized Access",
-    severity: "Info",
-    offender_ip: "43.153.74.75",
-    reason: "Failed login attempt",
-    explanation: "IP attempted login with invalid credentials",
-    created_at: "2025-05-17T20:10:00+05:30",
-  },
+    {
+        alert_id: 1,
+        alert_type: "High Traffic",
+        severity: "Warning",
+        offender_ip: "20.171.26.170",
+        reason: "Excessive GET requests",
+        explanation: "IP sent 100 requests in 5 minutes, exceeding threshold",
+        created_at: "2025-05-17T20:00:00+05:30",
+    },
+    {
+        alert_id: 2,
+        alert_type: "Server Error",
+        severity: "Critical",
+        offender_ip: "65.49.20.69",
+        reason: "Multiple 500 errors",
+        explanation: "Server crashed due to overload",
+        created_at: "2025-05-17T20:05:00+05:30",
+    },
+    {
+        alert_id: 3,
+        alert_type: "Unauthorized Access",
+        severity: "Info",
+        offender_ip: "43.153.74.75",
+        reason: "Failed login attempt",
+        explanation: "IP attempted login with invalid credentials",
+        created_at: "2025-05-17T20:10:00+05:30",
+    },
 ];
 
 export default function Dashboard() {
@@ -207,8 +207,8 @@ export default function Dashboard() {
                     <Button
                         onClick={() => window.open('/report', '_blank')}
                         className="flex items-center gap-2"
-                        >
-                    <Image src="/ai-icon.svg" alt="AI Icon" width={20} height={20} />
+                    >
+                        <Image src="/ai-icon.svg" alt="AI Icon" width={20} height={20} />
                         Generate Incident Report
                     </Button>
                     <ThemeToggle />
@@ -216,46 +216,14 @@ export default function Dashboard() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="border border-gray-300">
-                    <CardHeader>
-                        <CardTitle>Total Alert Log Enter (Time)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-[300px]">
-                            <LineChartComponent data={alertLogData} theme={theme} />
-                        </div>
-                    </CardContent>
-                </Card>
+                <AlertTrendChart theme={theme} />
 
-                <Card className="border border-gray-300">
-                    <CardHeader>
-                        <CardTitle>Alert Type Distribution</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-[300px] flex items-center justify-center">
-                            <DonutChartComponent data={alertTypeData} theme={theme} />
-                        </div>
-                    </CardContent>
-                </Card>
+                <AlertDistributionChart theme={theme} />
             </div>
 
-            <Card className="border border-gray-300">
-            <CardHeader>
-                <CardTitle>Alert Summary</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <AlertTable data={alertData} />
-            </CardContent>
-            </Card>
+            <AlertsContainer />
 
-            <Card className="border border-gray-300">
-                <CardHeader>
-                    <CardTitle>Display Logs</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <LogsTable data={logsData} />
-                </CardContent>
-            </Card>
+            <LogsContainer />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="border border-gray-300">
@@ -268,18 +236,7 @@ export default function Dashboard() {
                         </div>
                     </CardContent>
                 </Card>
-
-                <Card className="border border-gray-300 w-full">
-                    <CardHeader>
-                        <CardTitle>HTTP Methods Over Time</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-[300px]">
-                            <StackedAreaChartComponent data={httpMethodsData} theme={theme} />
-                        </div>
-                    </CardContent>
-                </Card>
             </div>
-        </div>
+        </div >
     )
 }

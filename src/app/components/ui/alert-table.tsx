@@ -13,8 +13,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ChevronRight, ChevronDown } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+<<<<<<< HEAD:src/app/components/alert-table.tsx
 import { Checkbox } from "@/components/ui/checkbox";
 import React from "react";
+=======
+>>>>>>> main:src/app/components/ui/alert-table.tsx
 
 interface AlertEntry {
   alert_id: number;
@@ -28,14 +31,15 @@ interface AlertEntry {
 
 interface AlertTableProps {
   data: AlertEntry[];
+  itemsPerPage?: number;
 }
 
-export default function AlertTable({ data }: AlertTableProps) {
+export default function AlertTable({ data, itemsPerPage = 5 }: AlertTableProps) {
   const [page, setPage] = useState(1);
   const [selectedRows, setSelectedRows] = useState<number[]>([]);
   const [expandedRows, setExpandedRows] = useState<number[]>([]);
 
-  const itemsPerPage = 3;
+  ;
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
   const paginatedData = data.slice((page - 1) * itemsPerPage, page * itemsPerPage);
@@ -63,11 +67,6 @@ export default function AlertTable({ data }: AlertTableProps) {
     return text.slice(0, maxLength) + "...";
   };
 
-  const handleCheckboxChange = (alertId: number) => {
-    setSelectedRows((prev) =>
-      prev.includes(alertId) ? prev.filter((rowId) => rowId !== alertId) : [...prev, alertId]
-    );
-  };
 
   const handleExpandToggle = (alertId: number) => {
     setExpandedRows((prev) =>
@@ -98,7 +97,7 @@ export default function AlertTable({ data }: AlertTableProps) {
                 <React.Fragment key={alert.alert_id}>
                   <TableRow key={alert.alert_id} className="border-b border-gray-100 dark:border-gray-800">
                     {/* <TableCell> */}
-                      {/* <Checkbox
+                    {/* <Checkbox
                         checked={selectedRows.includes(alert.alert_id)}
                         onCheckedChange={() => handleCheckboxChange(alert.alert_id)}
                         className="border-2 border-gray-400 bg-white rounded"
